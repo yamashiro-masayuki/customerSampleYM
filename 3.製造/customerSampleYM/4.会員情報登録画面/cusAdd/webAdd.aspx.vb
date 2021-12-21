@@ -13,9 +13,16 @@
     Dim loginCus As New cusCommon.loginCusInfo
     'チェッククラスの呼び出し
     Dim check As New cusCommon.checkClass
+    '値変換クラスの呼び出し
+    Dim convert As New cusCommon.commonItemConversion
+
+    '顧客情報登録メソッドクラスの呼び出し
+    Dim addMethod As New addMethodClass
 
     'メソッドの戻り値代入変数
     Dim no As Integer
+    '画面記述項目を入れるDataTable変数
+    Dim screenData As New DataTable
 
     '画面項目のクリア
     Sub Clear()
@@ -39,6 +46,33 @@
 
     End Sub
 
+    'DataTableに画面記述を保存する。
+    Sub dataInsert(data As DataTable)
+
+        data.Rows.Add()
+        data.Rows(0)("CUST_ID") = txt_ID.Text
+        data.Rows(0)("CUST_PASS") = txt_Pass.Text
+        data.Rows(0)("PERSON_LASTNAME") = txt_LastName.Text
+        data.Rows(0)("PERSON_NAME") = txt_Name.Text
+        data.Rows(0)("PERSON_KANA_LASTNAME") = txt_KanaLastName.Text
+        data.Rows(0)("PERSON_KANA_NAME") = txt_KanaName.Text
+        data.Rows(0)("SEX") = addCusInfo.insereCusSex
+        data.Rows(0)("BIRTH_YEAR") = txt_BirthYear.Text
+        data.Rows(0)("BIRTH_MONTH") = txt_BirthMonth.Text
+        data.Rows(0)("BIRTH_DAY") = txt_BirthDay.Text
+        data.Rows(0)("POSTAL_CODE") = txt_PostalCode.Text
+        data.Rows(0)("ADDRESS_PREFECTURES") = addCusInfo.insereCusPrefecture
+        data.Rows(0)("ADDRESS_CITY") = txt_AddressCity.Text
+        data.Rows(0)("ADDRESS_STREET") = txt_AdressStreet.Text
+        data.Rows(0)("ADDRESS_BUILDING") = txt_AdressBuilding.Text
+        data.Rows(0)("UPDATE_PERSON") = txt_ID.Text
+        data.Rows(0)("UPDATE_DAY") = $"{Date.Now.Year}{Date.Now.Month}{Date.Now.Day}"
+        data.Rows(0)("CREATE_PERSON") = txt_ID.Text
+        data.Rows(0)("CREATE_DAY") = $"{Date.Now.Year}{Date.Now.Month}{Date.Now.Day}"
+        data.Rows(0)("IS_DLTFLG") = 0
+
+    End Sub
+
     '画面表示時の処理
     Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
 
@@ -48,7 +82,7 @@
         commonItem.sexItemInsert(ddl_Sex)
         '都道府県マスタのデータ代入
         Try
-            no = commonItem.prefectureItemInsert(ddl_Prefecture)
+            no = commonItem.prefectureItemInsert(ddl_Prefecture, commonMethod)
 
             If no = 2 Then
                 'SQLエラーのため、SQLエラーメッセージを表示する。
@@ -143,7 +177,68 @@
         End If
 #End Region
 
+        'Passの記述が一致しているかを確認する。
+        If 0 < check.checkPassTextBox(txt_Pass, txt_PassCheck) Then
+            'Pass不一致エラーのため、エラーメッセージを表示する。
+            errorMsg.errorMsg(lbl_ErrorMsg, number.no5)
+            Return
+        End If
 
+        '生年月日の日付が操作日よりも後の日付ではないことを確認する。
+        If 0 < check.checkBirthDate($"{txt_BirthYear.Text}{txt_BirthMonth.Text}{txt_BirthDay.Text}") Then
+            'Pass不一致エラーのため、エラーメッセージを表示する。
+            errorMsg.errorMsg(lbl_ErrorMsg, number.no6)
+            Return
+        End If
+
+        '性別の記述を数値に変換
+        addCusInfo.insereCusSex = convert.sexItemInConvert(ddl_Sex)
+
+        '画面項目の住所の記述確認
+        If 0 < ddl_Prefecture.SelectedValue Then
+            addCusInfo.insereCusPrefecture = convert.prefectureItemInConvert(ddl_Prefecture.Text, commonMethod)
+
+        End If
+
+        '顧客IDの存在確認
+        Try
+            no = addMethod.checkData(txt_ID.Text)
+
+            If no = 2 Then
+                'SQLエラーのため、SQLエラーメッセージを表示する。
+                errorMsg.errorMsg(lbl_ErrorMsg, number.no2)
+                Return
+            ElseIf no = 1 Then
+                '顧客IDが既に使用されているため、ID仕様エラーメッセージを表示する。
+                errorMsg.errorMsg(lbl_ErrorMsg, number.no7)
+                Return
+            End If
+
+            '画面記述を保持するDataTableの作成。
+            screenData = addMethod.customerDataAddColums(screenData)
+            '画面記述をDataTableに代入。
+            dataInsert(screenData)
+
+            '会員情報のデータ登録
+
+            no = addMethod.addData(screenData)
+
+            If no = 2 Then
+                'SQLエラーのため、SQLエラーメッセージを表示する。
+                errorMsg.errorMsg(lbl_ErrorMsg, number.no2)
+                Return
+            End If
+
+        Catch ex As Exception
+            'その他エラーメッセージを表示する。
+            errorMsg.errorMsg(lbl_ErrorMsg, number.no4)
+            Return
+        End Try
+
+
+
+        '画面項目の記述初期化
+        Clear()
 
     End Sub
 
