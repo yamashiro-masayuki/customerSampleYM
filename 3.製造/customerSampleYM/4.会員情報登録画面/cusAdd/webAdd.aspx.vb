@@ -18,6 +18,8 @@
 
     '顧客情報登録メソッドクラスの呼び出し
     Dim addMethod As New addMethodClass
+    '顧客情報登録変換データクラスの呼び出し
+    Dim addCus As New addCusInfo
 
     'メソッドの戻り値代入変数
     Dim no As Integer
@@ -47,7 +49,7 @@
     End Sub
 
     'DataTableに画面記述を保存する。
-    Sub dataInsert(data As DataTable)
+    Sub dataInsert(data As DataTable, addCus As addCusInfo)
 
         data.Rows.Add()
         data.Rows(0)("CUST_ID") = txt_ID.Text
@@ -56,12 +58,12 @@
         data.Rows(0)("PERSON_NAME") = txt_Name.Text
         data.Rows(0)("PERSON_KANA_LASTNAME") = txt_KanaLastName.Text
         data.Rows(0)("PERSON_KANA_NAME") = txt_KanaName.Text
-        data.Rows(0)("SEX") = addCusInfo.insereCusSex
+        data.Rows(0)("SEX") = addCus.insereCusSex
         data.Rows(0)("BIRTH_YEAR") = txt_BirthYear.Text
         data.Rows(0)("BIRTH_MONTH") = txt_BirthMonth.Text
         data.Rows(0)("BIRTH_DAY") = txt_BirthDay.Text
         data.Rows(0)("POSTAL_CODE") = txt_PostalCode.Text
-        data.Rows(0)("ADDRESS_PREFECTURES") = addCusInfo.insereCusPrefecture
+        data.Rows(0)("ADDRESS_PREFECTURES") = addCus.insereCusPrefecture
         data.Rows(0)("ADDRESS_CITY") = txt_AddressCity.Text
         data.Rows(0)("ADDRESS_STREET") = txt_AdressStreet.Text
         data.Rows(0)("ADDRESS_BUILDING") = txt_AdressBuilding.Text
@@ -192,11 +194,11 @@
         End If
 
         '性別の記述を数値に変換
-        addCusInfo.insereCusSex = convert.sexItemInConvert(ddl_Sex)
+        addCus.insereCusSex = convert.sexItemInConvert(ddl_Sex)
 
         '画面項目の住所の記述確認
         If 0 < ddl_Prefecture.SelectedValue Then
-            addCusInfo.insereCusPrefecture = convert.prefectureItemInConvert(ddl_Prefecture.Text, commonMethod)
+            addCus.insereCusPrefecture = convert.prefectureItemInConvert(ddl_Prefecture.Text, commonMethod)
 
         End If
 
@@ -217,10 +219,9 @@
             '画面記述を保持するDataTableの作成。
             screenData = addMethod.customerDataAddColums(screenData)
             '画面記述をDataTableに代入。
-            dataInsert(screenData)
+            dataInsert(screenData, addCus)
 
             '会員情報のデータ登録
-
             no = addMethod.addData(screenData)
 
             If no = 2 Then
