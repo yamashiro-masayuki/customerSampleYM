@@ -4,65 +4,36 @@ Public Class addMethodClass
 
     Dim commonMethod As New cusCommon.commonMethodClass
 
-    'IDに当てはまるデータを取ってくるSQL
-    Function checkData(id As String) As Integer
-        Dim con As String = commonMethod.dataSorce
-        Dim Sql As String
-        Sql += "SELECT CUST_ID "
-        Sql += "FROM m_customer "
+	'IDに当てはまるデータを取ってくるSQL
+	Function checkData(id As String) As Integer
+		Dim con As String = commonMethod.dataSorce
+		Dim Sql As String
+		Sql += "SELECT CUST_ID "
+		Sql += "FROM m_customer "
 		Sql += $"where CUST_ID = '{id}' and "
 		Sql += "IS_DLTFLG = 0 "
 
-        checkData = 0
+		checkData = 0
 
-        Try
-            Using Conn As New SqlConnection
-                Conn.ConnectionString = (con)
-                Conn.Open()
-                Using cmd As New SqlCommand(Sql)
-                    cmd.Connection = Conn
-                    cmd.CommandType = CommandType.Text
-                    Using reader As SqlDataReader = cmd.ExecuteReader()
-                        While (reader.Read())
-                            checkData = 1
-                        End While
-                    End Using
-                End Using
-            End Using
-        Catch ex As Exception
-            Console.WriteLine(ex.Message)
-            checkData = 2
-        End Try
-    End Function
-
-	'画面の記述データを入れるDataTableを作成する。
-	Function customerDataAddColums(data As DataTable) As DataTable
-
-		data.Columns.Add("CUST_ID")
-		data.Columns.Add("CUST_PASS")
-		data.Columns.Add("PERSON_LASTNAME")
-		data.Columns.Add("PERSON_NAME")
-		data.Columns.Add("PERSON_KANA_LASTNAME")
-		data.Columns.Add("PERSON_KANA_NAME")
-		data.Columns.Add("SEX")
-		data.Columns.Add("BIRTH_YEAR")
-		data.Columns.Add("BIRTH_MONTH")
-		data.Columns.Add("BIRTH_DAY")
-		data.Columns.Add("POSTAL_CODE")
-		data.Columns.Add("ADDRESS_PREFECTURES")
-		data.Columns.Add("ADDRESS_CITY")
-		data.Columns.Add("ADDRESS_STREET")
-		data.Columns.Add("ADDRESS_BUILDING")
-		data.Columns.Add("UPDATE_PERSON")
-		data.Columns.Add("UPDATE_DAY")
-		data.Columns.Add("CREATE_PERSON")
-		data.Columns.Add("CREATE_DAY")
-		data.Columns.Add("IS_DLTFLG")
-
-		customerDataAddColums = data
-
+		Try
+			Using Conn As New SqlConnection
+				Conn.ConnectionString = (con)
+				Conn.Open()
+				Using cmd As New SqlCommand(Sql)
+					cmd.Connection = Conn
+					cmd.CommandType = CommandType.Text
+					Using reader As SqlDataReader = cmd.ExecuteReader()
+						While (reader.Read())
+							checkData = 1
+						End While
+					End Using
+				End Using
+			End Using
+		Catch ex As Exception
+			Console.WriteLine(ex.Message)
+			checkData = 2
+		End Try
 	End Function
-
 
 	'新しくデータを作成する
 	Function addData(data As DataTable) As Integer

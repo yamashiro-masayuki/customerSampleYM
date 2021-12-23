@@ -217,7 +217,7 @@
             End If
 
             '画面記述を保持するDataTableの作成。
-            screenData = addMethod.customerDataAddColums(screenData)
+            screenData = commonMethod.customerOnlyDataAddColums(screenData)
             '画面記述をDataTableに代入。
             dataInsert(screenData, addCus)
 
