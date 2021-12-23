@@ -12,6 +12,7 @@ Public Class commonMethodClass
 
 #Region "取得データテーブルのカラム追加"
 
+    '顧客情報マスタと都道府県マスタをカラムで入れる。
     Function customerDataAddColums(data As DataTable) As DataTable
 
         data.Columns.Add("CUST_ID")
@@ -34,11 +35,16 @@ Public Class commonMethodClass
         data.Columns.Add("CREATE_PERSON")
         data.Columns.Add("CREATE_DAY")
         data.Columns.Add("IS_DLTFLG")
+        data.Columns.Add("PREFECTURE_CODE")
+        data.Columns.Add("PREFECTURE_REGION")
+        data.Columns.Add("PREFECTURE_NAME")
+        data.Columns.Add("PREFECTURE_KANA_NAME")
 
         customerDataAddColums = data
 
     End Function
 
+    '都道府県マスタのみをカラムで入れる。
     Function prefectureDataAddColums(data As DataTable) As DataTable
 
         data.Columns.Add("PREFECTURE_CODE")
@@ -50,14 +56,43 @@ Public Class commonMethodClass
 
     End Function
 
+    '顧客情報マスタのみをカラムで入れる。
+    Function customerOnlyDataAddColums(data As DataTable) As DataTable
+
+        data.Columns.Add("CUST_ID")
+        data.Columns.Add("CUST_PASS")
+        data.Columns.Add("PERSON_LASTNAME")
+        data.Columns.Add("PERSON_NAME")
+        data.Columns.Add("PERSON_KANA_LASTNAME")
+        data.Columns.Add("PERSON_KANA_NAME")
+        data.Columns.Add("SEX")
+        data.Columns.Add("BIRTH_YEAR")
+        data.Columns.Add("BIRTH_MONTH")
+        data.Columns.Add("BIRTH_DAY")
+        data.Columns.Add("POSTAL_CODE")
+        data.Columns.Add("ADDRESS_PREFECTURES")
+        data.Columns.Add("ADDRESS_CITY")
+        data.Columns.Add("ADDRESS_STREET")
+        data.Columns.Add("ADDRESS_BUILDING")
+        data.Columns.Add("UPDATE_PERSON")
+        data.Columns.Add("UPDATE_DAY")
+        data.Columns.Add("CREATE_PERSON")
+        data.Columns.Add("CREATE_DAY")
+        data.Columns.Add("IS_DLTFLG")
+
+        customerOnlyDataAddColums = data
+
+    End Function
+
 #End Region
 
     'IDと一致したレコードを取得するメソッド
-    Function GetData(id As String, pass As String) As Integer
+    Function GetData(data As DataTable, id As String) As Integer
         Dim con As String = dataSorce
         Dim Sql As String
         Sql = "SELECT * "
         Sql += "FROM m_customer "
+        Sql += "Left Join m_prefecture On m_customer.ADDRESS_PREFECTURES = m_prefecture.PREFECTURE_CODE "
         Sql += $"where CUST_ID = '{id}' and "
         Sql += "IS_DLTFLG = 0 "
 
@@ -70,17 +105,31 @@ Public Class commonMethodClass
                     cmd.CommandType = CommandType.Text
                     Using reader As SqlDataReader = cmd.ExecuteReader()
                         While (reader.Read())
-                            'Common.cusID = reader.GetString(1)
-                            'Common.cusPass = reader.GetString(2)
-                            'Common.fullName = reader.GetString(3)
-                            'Common.sex = reader.GetString(4)
-                            'Common.BDYear = reader.GetInt32(5)
-                            'Common.BDMonth = reader.GetInt32(6)
-                            'Common.BDDay = reader.GetInt32(7)
-                            'Common.posAdress = reader.GetString(8)
-                            'Common.address1 = reader.GetString(9)
-                            'Common.address2 = reader.GetString(10)
-                            'Common.checkData = True
+                            data.Rows.Add()
+                            data.Rows(0)("CUST_ID") = reader.GetString(0)
+                            data.Rows(0)("CUST_PASS") = reader.GetString(1)
+                            data.Rows(0)("PERSON_LASTNAME") = reader.GetString(2)
+                            data.Rows(0)("PERSON_NAME") = reader.GetString(3)
+                            data.Rows(0)("PERSON_KANA_LASTNAME") = reader.GetString(4)
+                            data.Rows(0)("PERSON_KANA_NAME") = reader.GetString(5)
+                            data.Rows(0)("SEX") = reader.GetInt32(6)
+                            data.Rows(0)("BIRTH_YEAR") = reader.GetInt32(7)
+                            data.Rows(0)("BIRTH_MONTH") = reader.GetInt32(8)
+                            data.Rows(0)("BIRTH_DAY") = reader.GetInt32(9)
+                            data.Rows(0)("POSTAL_CODE") = reader.GetString(10)
+                            data.Rows(0)("ADDRESS_PREFECTURES") = reader.GetInt32(11)
+                            data.Rows(0)("ADDRESS_CITY") = reader.GetString(12)
+                            data.Rows(0)("ADDRESS_STREET") = reader.GetString(13)
+                            data.Rows(0)("ADDRESS_BUILDING") = reader.GetString(14)
+                            data.Rows(0)("UPDATE_PERSON") = reader.GetString(15)
+                            data.Rows(0)("UPDATE_DAY") = reader.GetDateTime(16)
+                            data.Rows(0)("CREATE_PERSON") = reader.GetString(17)
+                            data.Rows(0)("CREATE_DAY") = reader.GetDateTime(18)
+                            data.Rows(0)("IS_DLTFLG") = reader.GetByte(19)
+                            data.Rows(0)("PREFECTURE_CODE") = reader.GetInt32(20)
+                            data.Rows(0)("PREFECTURE_REGION") = reader.GetString(21)
+                            data.Rows(0)("PREFECTURE_NAME") = reader.GetString(22)
+                            data.Rows(0)("PREFECTURE_KANA_NAME") = reader.GetString(23)
                         End While
                     End Using
                     GetData = 1
@@ -125,5 +174,83 @@ Public Class commonMethodClass
             GetPrefecture = 2
         End Try
     End Function
+
+    '取得性別を数値から文字に変換
+    Function sexWordChange(data As Integer) As String
+
+        If data = 1 Then
+            sexWordChange = "男"
+
+        ElseIf data = 2 Then
+            sexWordChange = "女"
+
+        ElseIf data = 3 Then
+            sexWordChange = "その他"
+
+        Else
+            sexWordChange = ""
+        End If
+
+    End Function
+
+
+    'IDと一致したレコードを悲観ロックし、取得するメソッド
+    Function GetRockData(data As DataTable, id As String) As Integer
+        Dim con As String = dataSorce
+        Dim Sql As String
+        Sql = "begin transaction "
+        Sql += "SELECT * "
+        Sql += "FROM m_customer "
+        Sql += $"where CUST_ID = '{id}' and "
+        Sql += "IS_DLTFLG = 0 "
+        Sql += "for update nowait "
+
+        Try
+            Using Conn As New SqlConnection
+                Conn.ConnectionString = (con)
+                Conn.Open()
+                Using cmd As New SqlCommand(Sql)
+                    cmd.Connection = Conn
+                    cmd.CommandType = CommandType.Text
+                    Using reader As SqlDataReader = cmd.ExecuteReader()
+                        While (reader.Read())
+                            data.Rows.Add()
+                            data.Rows(0)("CUST_ID") = reader.GetString(0)
+                            data.Rows(0)("CUST_PASS") = reader.GetString(1)
+                            data.Rows(0)("PERSON_LASTNAME") = reader.GetString(2)
+                            data.Rows(0)("PERSON_NAME") = reader.GetString(3)
+                            data.Rows(0)("PERSON_KANA_LASTNAME") = reader.GetString(4)
+                            data.Rows(0)("PERSON_KANA_NAME") = reader.GetString(5)
+                            data.Rows(0)("SEX") = reader.GetInt32(6)
+                            data.Rows(0)("BIRTH_YEAR") = reader.GetInt32(7)
+                            data.Rows(0)("BIRTH_MONTH") = reader.GetInt32(8)
+                            data.Rows(0)("BIRTH_DAY") = reader.GetInt32(9)
+                            data.Rows(0)("POSTAL_CODE") = reader.GetString(10)
+                            data.Rows(0)("ADDRESS_PREFECTURES") = reader.GetInt32(11)
+                            data.Rows(0)("ADDRESS_CITY") = reader.GetString(12)
+                            data.Rows(0)("ADDRESS_STREET") = reader.GetString(13)
+                            data.Rows(0)("ADDRESS_BUILDING") = reader.GetString(14)
+                            data.Rows(0)("UPDATE_PERSON") = reader.GetString(15)
+                            data.Rows(0)("UPDATE_DAY") = reader.GetDateTime(16)
+                            data.Rows(0)("CREATE_PERSON") = reader.GetString(17)
+                            data.Rows(0)("CREATE_DAY") = reader.GetDateTime(18)
+                            data.Rows(0)("IS_DLTFLG") = reader.GetByte(19)
+                        End While
+                    End Using
+                    GetRockData = 1
+                End Using
+            End Using
+        Catch ex As Exception
+            Console.WriteLine(ex.Message)
+            GetRockData = 2
+        End Try
+    End Function
+
+
+
+
+
+
+
 
 End Class

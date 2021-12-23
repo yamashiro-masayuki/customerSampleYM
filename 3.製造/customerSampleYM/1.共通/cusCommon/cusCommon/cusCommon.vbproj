@@ -97,6 +97,7 @@
   <ItemGroup>
     <Compile Include="checkClass.vb" />
     <Compile Include="commonItemAssignment.vb" />
+    <Compile Include="commonItemConversion.vb" />
     <Compile Include="commonMethodClass.vb" />
     <Compile Include="errorMsgClass.vb" />
     <Compile Include="loginCusInfo.vb" />
@@ -120,6 +121,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <Compile Include="numberClass.vb" />
+    <Compile Include="viewCusInfo.vb" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="My Project\Resources.resx">

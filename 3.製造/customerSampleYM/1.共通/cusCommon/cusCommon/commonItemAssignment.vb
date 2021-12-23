@@ -18,8 +18,9 @@ Public Class commonItemAssignment
 
 
     '都道府県の値を入れる作業
-    Function prefectureItemInsert(ddl As DropDownList) As Integer
+    Function prefectureItemInsert(ddl As DropDownList, method As commonMethodClass) As Integer
 
+        commonMethod = method
         '都道府県マスタの取得データを入れるDataTableの作成
         commonMethod.prefectureDataAddColums(commonMethod.getPrefectureData)
         '都道府県マスタのデータ取得
@@ -28,8 +29,8 @@ Public Class commonItemAssignment
             Return prefectureItemInsert
         End If
         '都道府県マスタのデータ代入
-        For i = 1 To commonMethod.getPrefectureData.Rows.Count
-            list = New ListItem($"{commonMethod.getPrefectureData.Rows(i - 1)("PREFECTURE_NAME")}", $"{i}")
+        For i = 0 To commonMethod.getPrefectureData.Rows.Count - 1
+            list = New ListItem($"{commonMethod.getPrefectureData.Rows(i)("PREFECTURE_NAME")}", $"{i}")
             ddl.Items.Add(list)
         Next
 
