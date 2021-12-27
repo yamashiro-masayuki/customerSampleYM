@@ -97,6 +97,8 @@
     <Content Include="webDelete.aspx" />
     <Content Include="webLogin.aspx" />
     <Content Include="webMainMenu.aspx" />
+    <Content Include="webUP.aspx" />
+    <Content Include="webView.aspx" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="addCusInfo.vb" />
@@ -129,6 +131,9 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <Compile Include="numberClass.vb" />
+    <Compile Include="selectViewCusInfo.vb" />
+    <Compile Include="upCusInfo.vb" />
+    <Compile Include="upMethodClass.vb" />
     <Compile Include="viewCusInfo.vb" />
     <Compile Include="webAdd.aspx.designer.vb">
       <DependentUpon>webAdd.aspx</DependentUpon>
@@ -158,6 +163,21 @@
       <DependentUpon>webMainMenu.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
+    <Compile Include="webUP.aspx.designer.vb">
+      <DependentUpon>webUP.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="webUP.aspx.vb">
+      <DependentUpon>webUP.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="webView.aspx.designer.vb">
+      <DependentUpon>webView.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="webView.aspx.vb">
+      <DependentUpon>webView.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="webViewClass.vb" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="My Project\Resources.resx">
