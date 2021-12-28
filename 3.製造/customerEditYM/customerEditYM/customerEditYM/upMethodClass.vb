@@ -2,7 +2,7 @@
 Imports System.Data
 Public Class upMethodClass
 
-    Dim commonMethod As New cusCommon.commonMethodClass
+	Dim commonMethod As New commonMethodClass
 
 	'編集したデータを登録する。
 	Function upData(data As DataTable) As Boolean

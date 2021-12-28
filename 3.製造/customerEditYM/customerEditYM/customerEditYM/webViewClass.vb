@@ -2,7 +2,7 @@
 Imports System.Data
 Public Class webViewClass
 
-	Dim commonMethod As New cusCommon.commonMethodClass
+	Dim commonMethod As New commonMethodClass
 
 
 	'dataColumの挿入
@@ -102,6 +102,32 @@ Public Class webViewClass
 			viewGetData = 2
 		End Try
 	End Function
+
+	'性別の数値を文字に変換する。
+	Function sexWordChange(data As DataTable)
+
+		For i = 0 To data.Rows.Count - 1
+
+			If data.Rows(i)("性別") = 1 Then
+				data.Rows(i)("性別") = "男"
+
+			ElseIf data.Rows(i)("性別") = 2 Then
+				data.Rows(i)("性別") = "女"
+
+			ElseIf data.Rows(i)("性別") = 3 Then
+				data.Rows(i)("性別") = "その他"
+
+			Else
+				data.Rows(i)("性別") = "ｴﾗｰ"
+
+			End If
+		Next
+
+		sexWordChange = data
+
+	End Function
+
+
 
 
 

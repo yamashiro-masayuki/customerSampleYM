@@ -16,6 +16,20 @@ Public Class commonItemAssignment
 
     End Function
 
+    '性別(空白入り)の値を入れる作業
+    Function sexItemBrankInsert(ddl As DropDownList)
+
+        list = New ListItem("", "0")
+        ddl.Items.Add(list)
+        list = New ListItem("男", "1")
+        ddl.Items.Add(list)
+        list = New ListItem("女", "2")
+        ddl.Items.Add(list)
+        list = New ListItem("その他", "3")
+        ddl.Items.Add(list)
+
+    End Function
+
 
     '都道府県の値を入れる作業
     Function prefectureItemInsert(ddl As DropDownList, method As commonMethodClass) As Integer

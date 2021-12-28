@@ -1,4 +1,4 @@
-﻿<%@ Page Language="vb" AutoEventWireup="false" CodeBehind="webUP.aspx.vb" Inherits="cusUP.webUP" %>
+﻿<%@ Page Language="vb" AutoEventWireup="false" CodeBehind="webUP.aspx.vb" Inherits="customerEditYM.webUP" %>
 
 <!DOCTYPE html>
 

@@ -1,4 +1,4 @@
-﻿<%@ Page Language="vb" AutoEventWireup="false" CodeBehind="webView.aspx.vb" Inherits="cusView.webView" %>
+﻿<%@ Page Language="vb" AutoEventWireup="false" CodeBehind="webView.aspx.vb" Inherits="customerEditYM.webView" %>
 
 <!DOCTYPE html>
 
@@ -6,6 +6,11 @@
 <head runat="server">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <title></title>
+    <style type="text/css">
+        .Freezing {
+            margin-left: 49px;
+        }
+    </style>
 </head>
 <body>
     <form id="form1" runat="server">
@@ -70,8 +75,8 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 <asp:Label ID="lbl_SubTitleSecond" runat="server" ForeColor="Black" Text="編集画面ボタン" Font-Size="X-Large"></asp:Label>
                 <br />
-            　　　　<asp:Button ID="btn_cusUP" runat="server" Height="45px" Text="会員情報更新画面" Width="110px" />
-                <asp:Button ID="btn_cusDelete" runat="server" Height="45px" Text="会員情報消去画面" Width="106px" />
+            　　　　<asp:Button ID="btn_cusUP" runat="server" Height="45px" Text="会員情報更新画面" Width="130px" />
+                <asp:Button ID="btn_cusDelete" runat="server" Height="45px" Text="会員情報消去画面" Width="130px" />
                 <br />
             　　　　<asp:Label ID="lbl_cautionSeccond" runat="server" ForeColor="Black" Text="※一覧表示の選択に一つだけチェックした後、表示画面ボタンを押してください。"></asp:Label>
                 <br />
@@ -81,7 +86,12 @@
                 &nbsp;&nbsp;
             <asp:GridView ID="gv_CusInfo" runat="server" CssClass="Freezing" Width="486px">
                 <Columns>
-                    <asp:CheckBoxField HeaderText="データ表示" />
+                    <asp:TemplateField HeaderText="表示">
+                        <ItemTemplate>
+                            <asp:CheckBox ID="cb_viewCheck" runat="server" />
+                        </ItemTemplate>
+                        <ItemStyle HorizontalAlign="Center" />
+                    </asp:TemplateField>
                 </Columns>
             </asp:GridView>
             <br />

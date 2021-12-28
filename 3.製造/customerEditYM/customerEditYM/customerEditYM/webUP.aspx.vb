@@ -16,7 +16,9 @@
     '共通メソッドクラスの呼び出し
     Dim commonMethod As New commonMethodClass
     '一覧選択メソッドクラスの呼び出し
-    Dim viewCus As New selectViewCusInfo
+    Dim viewCus As New viewCusInfo
+    '一覧選択選択メソッドクラスの呼び出し
+    Dim selectView As New selectViewCusInfo
 
 
     '顧客情報更新メソッドクラスの呼び出し
@@ -55,7 +57,7 @@
             '取得データを保持するDataTableの作成。
             commonMethod.getCusData = commonMethod.customerDataAddColums(commonMethod.getCusData)
             '会員情報のデータ取得
-            no = commonMethod.GetData(commonMethod.getCusData, viewCus.viewCusID)
+            no = commonMethod.GetData(commonMethod.getCusData, selectView.viewCusID)
 
             If no = 2 Then
                 'SQLエラーのため、SQLエラーメッセージを表示する。
@@ -74,7 +76,7 @@
         End Try
 
         '取得された性別のデータを文字にする。
-        viewCus.sexWord = commonMethod.sexWordChange(commonMethod.getCusData.Rows(0)("SEX"))
+        viewCus.viewCusSex = commonMethod.sexWordChange(commonMethod.getCusData.Rows(0)("SEX"))
 
 
         '取得された項目のデータ表示
@@ -145,7 +147,7 @@
         data.Rows(0)("PERSON_NAME") = txt_Name.Text
         data.Rows(0)("PERSON_KANA_LASTNAME") = txt_KanaLastName.Text
         data.Rows(0)("PERSON_KANA_NAME") = txt_KanaName.Text
-        data.Rows(0)("SEX") = upCus.updateCusSex
+        data.Rows(0)("SEX") = upCus.viewCusSex
         data.Rows(0)("BIRTH_YEAR") = txt_BirthYear.Text
         data.Rows(0)("BIRTH_MONTH") = txt_BirthMonth.Text
         data.Rows(0)("BIRTH_DAY") = txt_BirthDay.Text
@@ -252,7 +254,7 @@
             End If
 
             '性別の記述を数値に変換
-            up.updateCusSex = convert.sexItemInConvert(ddl_Sex)
+            up.viewCusSex = convert.sexItemInConvert(ddl_Sex)
 
             '画面項目の住所の記述確認
             If 0 < ddl_Prefecture.SelectedValue Then

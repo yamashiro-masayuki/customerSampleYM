@@ -16,6 +16,8 @@
     Dim commonMethod As New commonMethodClass
     '一覧選択メソッドクラスの呼び出し
     Dim viewCus As New viewCusInfo
+    '一覧選択選択メソッドクラスの呼び出し
+    Dim selectView As New selectViewCusInfo
 
     '顧客情報消去メソッドクラスの呼び出し
     Dim deleteMethod As New deleteMethodClass
@@ -49,7 +51,7 @@
             '取得データを保持するDataTableの作成。
             commonMethod.getCusData = commonMethod.customerDataAddColums(commonMethod.getCusData)
             '会員情報のデータ取得
-            no = commonMethod.GetData(commonMethod.getCusData, viewCus.viewCusID)
+            no = commonMethod.GetData(commonMethod.getCusData, selectView.viewCusID)
 
             If no = 2 Then
                 'SQLエラーのため、SQLエラーメッセージを表示する。
@@ -68,7 +70,7 @@
         End Try
 
         '取得された性別のデータを文字にする。
-        viewCus.sexWord = commonMethod.sexWordChange(commonMethod.getCusData.Rows(0)("SEX"))
+        viewCus.viewCusSex = commonMethod.sexWordChange(commonMethod.getCusData.Rows(0)("SEX"))
 
 
         '取得された項目のデータ表示

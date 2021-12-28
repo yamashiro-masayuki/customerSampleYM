@@ -1,15 +1,31 @@
 ﻿Public Class selectViewCusInfo
 
 
-    'ログイン者名前
-    Public Property viewCusID As String = "admin"
+    '一覧・表示画面で選択された顧客ID
+    Public Shared selectViewCusID As String
+    Public Property viewCusID() As String
+        Get
+            Return selectViewCusID
+        End Get
+        Set(ByVal value As String)
+            selectViewCusID = value
+        End Set
+    End Property
 
     'ロックエラーフラグ
-    Public Property rockError As Boolean = False
+    Public Property rockErrorFlg As Boolean
+    Public Property rockError() As Boolean
+        Get
+            Return rockErrorFlg
+        End Get
+        Set(ByVal value As Boolean)
+            rockErrorFlg = value
+        End Set
+    End Property
 
 
-    '性別の文字化
-    Public Property sexWord As String
+
+
 
 
 

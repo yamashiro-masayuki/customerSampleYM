@@ -26,8 +26,8 @@ Public Class loginMethodClass
                     cmd.CommandType = CommandType.Text
                     Using reader As SqlDataReader = cmd.ExecuteReader()
                         While (reader.Read())
-                            loginCus.loginLastName = reader.GetString(0)
-                            loginCus.loginName = reader.GetString(1)
+                            loginCus.loginCusLastName = reader.GetString(0)
+                            loginCus.loginCusName = reader.GetString(1)
                             GetData = 1
                         End While
                     End Using

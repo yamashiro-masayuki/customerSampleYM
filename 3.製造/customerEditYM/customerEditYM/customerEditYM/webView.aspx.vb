@@ -2,18 +2,22 @@
     Inherits System.Web.UI.Page
 
     'エラーメッセージクラスの呼び出し
-    Dim errorMsg As New cusCommon.errorMsgClass
+    Dim errorMsg As New errorMsgClass
     '番号クラスの呼び出し
-    Dim number As New cusCommon.numberClass
+    Dim number As New numberClass
     '共通メソッドクラスの呼び出し
-    Dim commonMethod As New cusCommon.commonMethodClass
+    Dim commonMethod As New commonMethodClass
     '値変換クラスの呼び出し
-    Dim convert As New cusCommon.commonItemConversion
+    Dim convert As New commonItemConversion
+    'アイテム追加クラスの呼び出し
+    Dim commonItem As New commonItemAssignment
 
     '一覧・表示メソッドクラス
     Dim viewClass As New webViewClass
-    '一覧・表示メソッドクラス
+    '一覧・表示顧客情報クラス
     Dim viewCus As New viewCusInfo
+    '一覧選択選択メソッドクラスの呼び出し
+    Dim selectView As New selectViewCusInfo
 
     'メソッドの戻り値代入変数
     Dim no As Integer
@@ -21,6 +25,10 @@
     Dim screenData As New DataTable
     '取得データを入れるDataTable変数
     Dim getData As New DataTable
+    'チェックボックスの記述確認
+    Dim checkViewBox As New CheckBox
+    '表示チェックの個数を調査
+    Dim checkNum As Integer = 0
 
 
     '画面項目の初期化
@@ -37,6 +45,34 @@
         ddl_Sex.SelectedIndex = 0
 
     End Sub
+
+    'GridViewの表示チェックの確認と、編集データの保管
+    Function gv_DataGetInsert() As Integer
+
+        '表示チェックの個数確認
+        For i = 0 To gv_CusInfo.Rows.Count - 1
+
+            checkViewBox = gv_CusInfo.Rows(i).FindControl("cb_viewCheck")
+
+            If checkViewBox.Checked = True Then
+                checkNum += 1
+                selectView.viewCusID = gv_CusInfo.Rows(i).Cells(1).Text
+
+            End If
+        Next
+
+        '表示チェックがない、もしくは２個以上ある場合エラーメッセージを表示する。
+        If checkNum <> 1 Then
+
+            '選択チェックエラーのため、選択チェックエラーメッセージを表示する。
+            errorMsg.errorMsg(lbl_ErrorMsg, number.no9)
+            Return number.no1
+
+        End If
+
+        Return number.no0
+
+    End Function
 
 
     'DataTableに画面記述を保存する。
@@ -57,23 +93,19 @@
 
     Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
 
-        'ポストバックしてない場合初期化
-        If Not Page.IsPostBack Then
-            'Clear()
-        End If
 
-        'エラーメッセージを非表示にする。
+        'エラーメッセージを表示しない状態に変更。
         lbl_ErrorMsg.Visible = False
 
+        'ポストバックしてない場合初期化
+        If Not Page.IsPostBack Then
+            '性別に値を代入。
+            commonItem.sexItemBrankInsert(ddl_Sex)
+            Return
+        End If
 
 
 
-        ''GridViewを表示する。
-        'Me.gv_CusInfo.ShowHeaderWhenEmpty = True
-        ''登録のためのテーブル作り
-        'Data = serchViewClass.viewDataTable(Data)
-        'gv_CusInfo.DataSource = Data
-        'gv_CusInfo.DataBind()
 
     End Sub
 
@@ -124,11 +156,13 @@
             Return
         End Try
 
+        '性別の数値を文字に変換。
+        getData = viewClass.sexWordChange(getData)
+
+
         'グリッドビューに表示
         gv_CusInfo.DataSource = getData
         gv_CusInfo.DataBind()
-
-
 
 
     End Sub
@@ -136,7 +170,10 @@
     '会員情報更新画面ボタンを押したときの
     Protected Sub btn_cusUP_Click(sender As Object, e As EventArgs) Handles btn_cusUP.Click
 
-        '選択されたデータを保管する。
+        '表示チェックと選択データの保管を行う。エラーの場合処理を終了する。
+        If gv_DataGetInsert() = 1 Then
+            Return
+        End If
 
         '更新ページの表示
         Response.Redirect("~/webUp.aspx")
@@ -146,21 +183,16 @@
     '会員情報消去画面ボタンを押したときの
     Protected Sub btn_cusDelete_Click(sender As Object, e As EventArgs) Handles btn_cusDelete.Click
 
+        '表示チェックと選択データの保管を行う。エラーの場合処理を終了する。
+        If gv_DataGetInsert() = 1 Then
+            Return
+        End If
+
         '消去ページの表示
         Response.Redirect("~/webDelete.aspx")
 
     End Sub
 
 
-    Protected Sub gv_CusInfo_RowDataBound(sender As Object, e As GridViewRowEventArgs) Handles gv_CusInfo.RowDataBound
-        ''ヘッダ行の場合は処理しない
-        'If e.Row.RowIndex < 0 Then Return
-
-        ''チェックボックスコントロールを取得して有効化する
-        'Dim check As CheckBox = CType(e.Row.Cells(0).Controls(0), CheckBox)
-        'check.Enabled = True
-
-
-    End Sub
 
 End Class

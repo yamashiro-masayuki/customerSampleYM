@@ -1,7 +1,7 @@
 ﻿Public Class loginCusInfo
 
     'ログイン時使用顧客ID
-    Public Shared loginID As String
+    Public Shared loginID As String = ""
     Public Property loginCusID() As String
         Get
             Return loginID
@@ -13,7 +13,7 @@
 
 
     'ログイン者苗字
-    Public Shared loginLastName As String
+    Public Shared loginLastName As String = ""
     Public Property loginCusLastName() As String
         Get
             Return loginLastName
@@ -25,7 +25,7 @@
 
 
     'ログイン者名前
-    Public Shared loginName As String
+    Public Shared loginName As String = ""
     Public Property loginCusName() As String
         Get
             Return loginName

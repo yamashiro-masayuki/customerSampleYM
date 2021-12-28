@@ -1,6 +1,7 @@
 ﻿Public Class numberClass
 
     '「no + 『番号』」で数値を管理。
+    Public Property no0 As Integer = 0
     Public Property no1 As Integer = 1
     Public Property no2 As Integer = 2
     Public Property no3 As Integer = 3
