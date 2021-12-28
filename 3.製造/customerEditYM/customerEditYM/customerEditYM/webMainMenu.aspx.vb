@@ -13,8 +13,12 @@
     'ログアウトボタンの押下処理
     Protected Sub btn_LogOut_Click(sender As Object, e As EventArgs) Handles btn_LogOut.Click
 
+        commonLoginCus.loginCusID = ""
+        commonLoginCus.loginCusLastName = ""
+        commonLoginCus.loginCusName = ""
 
-
+        'ログイン画面を表示する。
+        Response.Redirect("webLogin.aspx", True)
 
     End Sub
 
@@ -22,7 +26,7 @@
     Protected Sub btn_addCus_Click(sender As Object, e As EventArgs) Handles btn_addCus.Click
 
         '顧客情報登録画面を表示する。
-        Response.Redirect("webView.aspx", True)
+        Response.Redirect("webAdd.aspx", True)
 
     End Sub
 
