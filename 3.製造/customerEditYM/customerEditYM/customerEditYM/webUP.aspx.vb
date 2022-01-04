@@ -172,10 +172,6 @@
 
 
 
-
-
-
-
 #Region "必須項目の記述確認"
             '顧客ID
             If check.checkTextBox(txt_ID) = 0 Then

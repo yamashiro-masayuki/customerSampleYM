@@ -36,16 +36,16 @@
                     <br />
                     &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
                     <asp:Label ID="lbl_LastName" runat="server" ForeColor="#0066FF" Text="氏名(苗字) : "></asp:Label>
-                    <asp:TextBox ID="txt_LastName" runat="server" MaxLength="10" Width="140px"></asp:TextBox>
+                    <asp:TextBox ID="txt_LastName" runat="server" MaxLength="5" Width="140px"></asp:TextBox>
                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<asp:Label ID="lbl_Name" runat="server" ForeColor="#0066FF" Text="氏名(名前) : "></asp:Label>
-                    <asp:TextBox ID="txt_Name" runat="server" MaxLength="18" Width="140px"></asp:TextBox>
+                    <asp:TextBox ID="txt_Name" runat="server" MaxLength="9" Width="140px"></asp:TextBox>
                     <br />
                     &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;
                     <asp:Label ID="lbl_KanaLastName" runat="server" ForeColor="#0066FF" Text="カナ(苗字) : "></asp:Label>
-                    <asp:TextBox ID="txt_KanaLastName" runat="server" MaxLength="18" Width="140px"></asp:TextBox>
+                    <asp:TextBox ID="txt_KanaLastName" runat="server" MaxLength="9" Width="140px"></asp:TextBox>
                     &nbsp;&nbsp;&nbsp;&nbsp;
                     <asp:Label ID="lbl_KanaName" runat="server" ForeColor="#0066FF" Text="カナ(名前) : "></asp:Label>
-                    <asp:TextBox ID="txt_KanaName" runat="server" MaxLength="18" Width="140px"></asp:TextBox>
+                    <asp:TextBox ID="txt_KanaName" runat="server" MaxLength="9" Width="140px"></asp:TextBox>
                     <br />
                     <br />
                     &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;

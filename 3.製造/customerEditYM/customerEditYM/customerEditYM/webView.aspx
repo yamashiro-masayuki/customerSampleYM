@@ -33,20 +33,20 @@
                     <asp:Label ID="lbl_BirthYear" runat="server" Text="年"></asp:Label>
                     <br />
                     &nbsp;&nbsp;<asp:Label ID="lbl_LastName" runat="server" ForeColor="Black" Text="氏名(苗字) : "></asp:Label>
-                    <asp:TextBox ID="txt_LastName" runat="server" MaxLength="10" Width="140px"></asp:TextBox>
+                    <asp:TextBox ID="txt_LastName" runat="server" MaxLength="5" Width="140px"></asp:TextBox>
                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                     <asp:TextBox ID="txt_BirthMonth" runat="server" MaxLength="2" Width="20px"></asp:TextBox>
                     <asp:Label ID="lbl_BirthMonth" runat="server" Text="月"></asp:Label>
                     <br />
                     &nbsp;&nbsp;<asp:Label ID="lbl_Name" runat="server" ForeColor="Black" Text="氏名(名前) : "></asp:Label>
-                    <asp:TextBox ID="txt_Name" runat="server" MaxLength="18" Width="140px"></asp:TextBox>
+                    <asp:TextBox ID="txt_Name" runat="server" MaxLength="9" Width="140px"></asp:TextBox>
                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                     <asp:TextBox ID="txt_BirthDay" runat="server" MaxLength="2" Width="20px"></asp:TextBox>
                     <asp:Label ID="lbl_BirthDay" runat="server" Text="日"></asp:Label>
                     <br />
                     &nbsp;&nbsp;
                     <asp:Label ID="lbl_KanaLastName" runat="server" ForeColor="Black" Text="カナ(苗字) : "></asp:Label>
-                    <asp:TextBox ID="txt_KanaLastName" runat="server" MaxLength="18" Width="140px"></asp:TextBox>
+                    <asp:TextBox ID="txt_KanaLastName" runat="server" MaxLength="9" Width="140px"></asp:TextBox>
                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                     <asp:Label ID="lbl_Sex" runat="server" ForeColor="Black" Text="性別 : "></asp:Label>
                     <asp:DropDownList ID="ddl_Sex" runat="server" Height="22px" Width="70px">
@@ -54,7 +54,7 @@
                     <br />
                     &nbsp;&nbsp;
                     <asp:Label ID="lbl_KanaName" runat="server" ForeColor="Black" Text="カナ(名前) : "></asp:Label>
-                    <asp:TextBox ID="txt_KanaName" runat="server" MaxLength="18" Width="140px"></asp:TextBox>
+                    <asp:TextBox ID="txt_KanaName" runat="server" MaxLength="9" Width="140px"></asp:TextBox>
                     <br />
                     <br />
                     &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;　<asp:Label ID="lbl_caution" runat="server" ForeColor="Black" Text="※何も書かれていない項目は検索条件には含まれません。"></asp:Label>
