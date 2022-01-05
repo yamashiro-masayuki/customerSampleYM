@@ -198,12 +198,22 @@ Public Class commonMethodClass
     Function GetRockData(data As DataTable, id As String) As Integer
         Dim con As String = dataSorce
         Dim Sql As String
-        Sql = "begin transaction "
-        Sql += "SELECT * "
-        Sql += "FROM m_customer "
-        Sql += $"where CUST_ID = '{id}' and "
-        Sql += "IS_DLTFLG = 0 "
-        Sql += "for update nowait "
+        'Sql = "begin transaction "
+        'Sql += "SELECT * "
+        'Sql += "FROM m_customer "
+        'Sql += $"where CUST_ID = '{id}' and "
+        'Sql += "IS_DLTFLG = 0 "
+        'Sql += "for update nowait "
+
+        Sql = "BEGIN TRAN "
+        Sql += "	select * "
+        Sql += "	from m_customer WITH(XLOCK,ROWLOCK,NOWAIT) "
+        Sql += $"	where CUST_ID = '{id}' "
+        Sql += "COMMIT TRAN "
+
+
+
+
 
         Try
             Using Conn As New SqlConnection

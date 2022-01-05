@@ -14,9 +14,9 @@ Public Class upMethodClass
 			Sql += $"CUST_PASS = '{data.Rows(0)("CUST_PASS").ToString()}', "
 		End If
 		Sql += $"CUST_ID = '{data.Rows(0)("CUST_ID").ToString()}', "
-		Sql += $"PERSON_LASTNAME = {data.Rows(0)("PERSON_LASTNAME").ToString()}, "
-		Sql += $"PERSON_NAME = {data.Rows(0)("PERSON_NAME").ToString()}, "
-		Sql += $"PERSON_KANA_LASTNAME = {data.Rows(0)("PERSON_KANA_LASTNAME").ToString()}, "
+		Sql += $"PERSON_LASTNAME = '{data.Rows(0)("PERSON_LASTNAME").ToString()}', "
+		Sql += $"PERSON_NAME = '{data.Rows(0)("PERSON_NAME").ToString()}', "
+		Sql += $"PERSON_KANA_LASTNAME = '{data.Rows(0)("PERSON_KANA_LASTNAME").ToString()}', "
 		Sql += $"PERSON_KANA_NAME = '{data.Rows(0)("PERSON_KANA_NAME").ToString()}', "
 		Sql += $"SEX = '{data.Rows(0)("SEX").ToString()}', "
 		Sql += $"BIRTH_YEAR = '{data.Rows(0)("BIRTH_YEAR").ToString()}', "
@@ -28,11 +28,8 @@ Public Class upMethodClass
 		Sql += $"ADDRESS_STREET = '{data.Rows(0)("ADDRESS_STREET").ToString()}', "
 		Sql += $"ADDRESS_BUILDING = '{data.Rows(0)("ADDRESS_BUILDING").ToString()}', "
 		Sql += $"UPDATE_PERSON = '{data.Rows(0)("UPDATE_PERSON").ToString()}', "
-		Sql += $"UPDATE_DAY = '{data.Rows(0)("UPDATE_DAY").ToString()}', "
-		Sql += $"BIRTH_YEAR = '{data.Rows(0)("BIRTH_YEAR").ToString()}', "
-		Sql += $"BIRTH_YEAR = '{data.Rows(0)("BIRTH_YEAR").ToString()}', "
-		Sql += $"BIRTH_YEAR = '{data.Rows(0)("BIRTH_YEAR").ToString()}'  "
-		Sql += $"WHERE ID = '{data.Rows(0)("ID")}' and "
+		Sql += $"UPDATE_DAY = '{data.Rows(0)("UPDATE_DAY").ToString()}' "
+		Sql += $"WHERE CUST_ID = '{data.Rows(0)("CUST_ID")}' and "
 		Sql += "IS_DLTFLG = 0 "
 
 		Try

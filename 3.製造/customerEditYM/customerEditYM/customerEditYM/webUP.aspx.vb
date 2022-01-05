@@ -38,71 +38,77 @@
     'ページが表示された時に起こる処理
     Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
 
-        'エラーメッセージを表示しない状態に変更。
-        lbl_ErrorMsg.Visible = False
-        '性別に値を代入。
-        commonItem.sexItemInsert(ddl_Sex)
+        'ポストバックしてない場合初期化
+        If Not Page.IsPostBack Then
+            '性別に値を代入。
+            commonItem.sexItemBrankInsert(ddl_Sex)
+            'エラーメッセージを表示しない状態に変更。
+            lbl_ErrorMsg.Visible = False
 
-        Try
-            '都道府県のDropDownListへの代入
-            no = commonItem.prefectureItemInsert(ddl_Prefecture, commonMethod)
+            Try
+                '都道府県のDropDownListへの代入
+                no = commonItem.prefectureItemInsert(ddl_Prefecture, commonMethod)
 
-            If no = 2 Then
-                'SQLエラーのため、SQLエラーメッセージを表示する。
-                errorMsg.errorMsg(lbl_ErrorMsg, number.no2)
-                Return
-            End If
+                If no = 2 Then
+                    'SQLエラーのため、SQLエラーメッセージを表示する。
+                    errorMsg.errorMsg(lbl_ErrorMsg, number.no2)
+                    Return
+                End If
 
 
-            '取得データを保持するDataTableの作成。
-            commonMethod.getCusData = commonMethod.customerDataAddColums(commonMethod.getCusData)
-            '会員情報のデータ取得
-            no = commonMethod.GetData(commonMethod.getCusData, selectView.viewCusID)
+                '取得データを保持するDataTableの作成。
+                commonMethod.getCusData = commonMethod.customerDataAddColums(commonMethod.getCusData)
+                '会員情報のデータ取得
+                no = commonMethod.GetData(commonMethod.getCusData, selectView.viewCusID)
 
-            If no = 2 Then
-                'SQLエラーのため、SQLエラーメッセージを表示する。
-                errorMsg.errorMsg(lbl_ErrorMsg, number.no2)
+                If no = 2 Then
+                    'SQLエラーのため、SQLエラーメッセージを表示する。
+                    errorMsg.errorMsg(lbl_ErrorMsg, number.no2)
+                    '顧客情報一覧・表示画面を表示する。
+                    Response.Redirect("webView.aspx", True)
+                    Return
+                End If
+
+            Catch ex As Exception
+                'その他エラーメッセージを表示する。
+                errorMsg.errorMsg(lbl_ErrorMsg, number.no4)
                 '顧客情報一覧・表示画面を表示する。
                 Response.Redirect("webView.aspx", True)
                 Return
-            End If
+            End Try
 
-        Catch ex As Exception
-            'その他エラーメッセージを表示する。
-            errorMsg.errorMsg(lbl_ErrorMsg, number.no4)
-            '顧客情報一覧・表示画面を表示する。
-            Response.Redirect("webView.aspx", True)
+            '取得された性別のデータを文字にする。
+            viewCus.viewCusSex = commonMethod.sexWordChange(commonMethod.getCusData.Rows(0)("SEX"))
+
+
+            '取得された項目のデータ表示
+            txt_ID.Text = commonMethod.getCusData.Rows(0)("CUST_ID").ToString
+            txt_LastName.Text = commonMethod.getCusData.Rows(0)("PERSON_LASTNAME").ToString
+            txt_Name.Text = commonMethod.getCusData.Rows(0)("PERSON_NAME").ToString
+            txt_KanaLastName.Text = commonMethod.getCusData.Rows(0)("PERSON_KANA_LASTNAME").ToString
+            txt_KanaName.Text = commonMethod.getCusData.Rows(0)("PERSON_KANA_NAME").ToString
+            txt_BirthYear.Text = commonMethod.getCusData.Rows(0)("BIRTH_YEAR").ToString
+            txt_BirthMonth.Text = commonMethod.getCusData.Rows(0)("BIRTH_MONTH").ToString
+            txt_BirthDay.Text = commonMethod.getCusData.Rows(0)("BIRTH_DAY").ToString
+            txt_PostalCode.Text = commonMethod.getCusData.Rows(0)("POSTAL_CODE").ToString
+            txt_AddressCity.Text = commonMethod.getCusData.Rows(0)("ADDRESS_CITY").ToString
+            txt_AdressStreet.Text = commonMethod.getCusData.Rows(0)("ADDRESS_STREET").ToString
+            txt_AdressBuilding.Text = commonMethod.getCusData.Rows(0)("ADDRESS_BUILDING").ToString
+
+            catchData = commonMethod.getCusData.Rows(0)("SEX")
+            ddl_Sex.SelectedValue = catchData - 1
+            catchData = commonMethod.getCusData.Rows(0)("ADDRESS_PREFECTURES")
+            ddl_Prefecture.SelectedValue = catchData
+
+            'パスワード変更チェックボックスのチェックを外す。
+            chkBox_Pass.Checked = False
+
+            'IDを使用不可にする。
+            txt_ID.Enabled = False
             Return
-        End Try
-
-        '取得された性別のデータを文字にする。
-        viewCus.viewCusSex = commonMethod.sexWordChange(commonMethod.getCusData.Rows(0)("SEX"))
+        End If
 
 
-        '取得された項目のデータ表示
-        txt_ID.Text = commonMethod.getCusData.Rows(0)("CUST_ID").ToString
-        txt_LastName.Text = commonMethod.getCusData.Rows(0)("PERSON_LASTNAME").ToString
-        txt_Name.Text = commonMethod.getCusData.Rows(0)("PERSON_NAME").ToString
-        txt_KanaLastName.Text = commonMethod.getCusData.Rows(0)("PERSON_KANA_LASTNAME").ToString
-        txt_KanaName.Text = commonMethod.getCusData.Rows(0)("PERSON_KANA_NAME").ToString
-        txt_BirthYear.Text = commonMethod.getCusData.Rows(0)("BIRTH_YEAR").ToString
-        txt_BirthMonth.Text = commonMethod.getCusData.Rows(0)("BIRTH_MONTH").ToString
-        txt_BirthDay.Text = commonMethod.getCusData.Rows(0)("BIRTH_DAY").ToString
-        txt_PostalCode.Text = commonMethod.getCusData.Rows(0)("POSTAL_CODE").ToString
-        txt_AddressCity.Text = commonMethod.getCusData.Rows(0)("ADDRESS_CITY").ToString
-        txt_AdressStreet.Text = commonMethod.getCusData.Rows(0)("ADDRESS_STREET").ToString
-        txt_AdressBuilding.Text = commonMethod.getCusData.Rows(0)("ADDRESS_BUILDING").ToString
-
-        catchData = commonMethod.getCusData.Rows(0)("SEX")
-        ddl_Sex.SelectedValue = catchData - 1
-        catchData = commonMethod.getCusData.Rows(0)("ADDRESS_PREFECTURES")
-        ddl_Prefecture.SelectedValue = catchData
-
-        'パスワード変更チェックボックスのチェックを外す。
-        chkBox_Pass.Checked = False
-
-        'IDを使用不可にする。
-        txt_ID.Enabled = False
 
 
     End Sub
@@ -157,7 +163,8 @@
         data.Rows(0)("ADDRESS_STREET") = txt_AdressStreet.Text
         data.Rows(0)("ADDRESS_BUILDING") = txt_AdressBuilding.Text
         data.Rows(0)("UPDATE_PERSON") = txt_ID.Text
-        data.Rows(0)("UPDATE_DAY") = $"{Date.Now.Year}{Date.Now.Month}{Date.Now.Day}"
+        'data.Rows(0)("UPDATE_DAY") = $"{Date.Now.Year}{Date.Now.Month}{Date.Now.Day}"
+        data.Rows(0)("UPDATE_DAY") = $"{Format(Date.Now, "yyyyMMdd")}"
         data.Rows(0)("IS_DLTFLG") = 0
 
     End Sub
@@ -167,7 +174,7 @@
         Try
 
             '悲観ロックの実行
-            commonMethod.GetRockData(commonMethod.getCusData, txt_ID.Text)
+            'commonMethod.GetRockData(commonMethod.getCusData, txt_ID.Text)
 
 
 

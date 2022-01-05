@@ -2,7 +2,7 @@
 
 
     '一覧・表示画面で選択された顧客ID
-    Public Shared selectViewCusID As String
+    Public Shared selectViewCusID As String = "admin"
     Public Property viewCusID() As String
         Get
             Return selectViewCusID
