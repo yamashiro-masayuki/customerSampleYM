@@ -4,10 +4,24 @@ Public Class commonMethodClass
 
     '顧客情報マスタの取得データを入れるデータテーブル型変数
     Public Property getCusData As New DataTable
+
     '都道府県マスタの取得データを入れるデータテーブル型変数
     Public Property getPrefectureData As New DataTable
 
     Public Property dataSorce As String = "Data Source=DESKTOP-CF5KSJ9;Initial Catalog=customerSampleYM;Integrated Security=SSPI;"
+
+#Region "共通SQLクライアント"
+
+    '共通トランザクションを保管する変数
+    Public Shared tra As SqlTransaction
+    '共通コマンドを保管する変数
+    Public Shared cmd As SqlCommand
+    '共通コネクションを保管する変数
+    Public Shared Conn As New SqlConnection
+
+
+
+#End Region
 
 
 #Region "取得データテーブルのカラム追加"
@@ -195,61 +209,43 @@ Public Class commonMethodClass
 
 
     'IDと一致したレコードを悲観ロックし、取得するメソッド
-    Function GetRockData(data As DataTable, id As String) As Integer
+    Function GetRockData(common As commonMethodClass, data As DataTable, id As String) As Integer
         Dim con As String = dataSorce
         Dim Sql As String
-        'Sql = "begin transaction "
-        'Sql += "SELECT * "
-        'Sql += "FROM m_customer "
-        'Sql += $"where CUST_ID = '{id}' and "
-        'Sql += "IS_DLTFLG = 0 "
-        'Sql += "for update nowait "
+        Dim reader As SqlDataReader
 
-        Sql = "BEGIN TRAN "
         Sql += "	select * "
         Sql += "	from m_customer WITH(XLOCK,ROWLOCK,NOWAIT) "
         Sql += $"	where CUST_ID = '{id}' "
-        Sql += "COMMIT TRAN "
-
-
-
-
 
         Try
-            Using Conn As New SqlConnection
-                Conn.ConnectionString = (con)
-                Conn.Open()
-                Using cmd As New SqlCommand(Sql)
-                    cmd.Connection = Conn
-                    cmd.CommandType = CommandType.Text
-                    Using reader As SqlDataReader = cmd.ExecuteReader()
-                        While (reader.Read())
-                            data.Rows.Add()
-                            data.Rows(0)("CUST_ID") = reader.GetString(0)
-                            data.Rows(0)("CUST_PASS") = reader.GetString(1)
-                            data.Rows(0)("PERSON_LASTNAME") = reader.GetString(2)
-                            data.Rows(0)("PERSON_NAME") = reader.GetString(3)
-                            data.Rows(0)("PERSON_KANA_LASTNAME") = reader.GetString(4)
-                            data.Rows(0)("PERSON_KANA_NAME") = reader.GetString(5)
-                            data.Rows(0)("SEX") = reader.GetInt32(6)
-                            data.Rows(0)("BIRTH_YEAR") = reader.GetInt32(7)
-                            data.Rows(0)("BIRTH_MONTH") = reader.GetInt32(8)
-                            data.Rows(0)("BIRTH_DAY") = reader.GetInt32(9)
-                            data.Rows(0)("POSTAL_CODE") = reader.GetString(10)
-                            data.Rows(0)("ADDRESS_PREFECTURES") = reader.GetInt32(11)
-                            data.Rows(0)("ADDRESS_CITY") = reader.GetString(12)
-                            data.Rows(0)("ADDRESS_STREET") = reader.GetString(13)
-                            data.Rows(0)("ADDRESS_BUILDING") = reader.GetString(14)
-                            data.Rows(0)("UPDATE_PERSON") = reader.GetString(15)
-                            data.Rows(0)("UPDATE_DAY") = reader.GetDateTime(16)
-                            data.Rows(0)("CREATE_PERSON") = reader.GetString(17)
-                            data.Rows(0)("CREATE_DAY") = reader.GetDateTime(18)
-                            data.Rows(0)("IS_DLTFLG") = reader.GetByte(19)
-                        End While
-                    End Using
-                    GetRockData = 1
-                End Using
-            End Using
+            cmd.CommandText = Sql
+            reader = cmd.ExecuteReader()
+            While (reader.Read())
+                data.Rows.Add()
+                data.Rows(0)("CUST_ID") = reader.GetString(0)
+                data.Rows(0)("CUST_PASS") = reader.GetString(1)
+                data.Rows(0)("PERSON_LASTNAME") = reader.GetString(2)
+                data.Rows(0)("PERSON_NAME") = reader.GetString(3)
+                data.Rows(0)("PERSON_KANA_LASTNAME") = reader.GetString(4)
+                data.Rows(0)("PERSON_KANA_NAME") = reader.GetString(5)
+                data.Rows(0)("SEX") = reader.GetInt32(6)
+                data.Rows(0)("BIRTH_YEAR") = reader.GetInt32(7)
+                data.Rows(0)("BIRTH_MONTH") = reader.GetInt32(8)
+                data.Rows(0)("BIRTH_DAY") = reader.GetInt32(9)
+                data.Rows(0)("POSTAL_CODE") = reader.GetString(10)
+                data.Rows(0)("ADDRESS_PREFECTURES") = reader.GetInt32(11)
+                data.Rows(0)("ADDRESS_CITY") = reader.GetString(12)
+                data.Rows(0)("ADDRESS_STREET") = reader.GetString(13)
+                data.Rows(0)("ADDRESS_BUILDING") = reader.GetString(14)
+                data.Rows(0)("UPDATE_PERSON") = reader.GetString(15)
+                data.Rows(0)("UPDATE_DAY") = reader.GetDateTime(16)
+                data.Rows(0)("CREATE_PERSON") = reader.GetString(17)
+                data.Rows(0)("CREATE_DAY") = reader.GetDateTime(18)
+                data.Rows(0)("IS_DLTFLG") = reader.GetByte(19)
+            End While
+            reader.Close()
+            GetRockData = 1
         Catch ex As Exception
             Console.WriteLine(ex.Message)
             GetRockData = 2

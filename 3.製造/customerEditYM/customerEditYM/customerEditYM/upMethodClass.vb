@@ -4,8 +4,13 @@ Public Class upMethodClass
 
 	Dim commonMethod As New commonMethodClass
 
+
+	'データ更新時データに変更があるか確認するTable。
+	Public Property getCusAfterData As New DataTable
+
+
 	'編集したデータを登録する。
-	Function upData(data As DataTable) As Boolean
+	Function upData(common As commonMethodClass, data As DataTable) As Boolean
 		Dim con As String = commonMethod.dataSorce
 		Dim Sql As String
 		Sql = "update m_customer set "
@@ -33,27 +38,23 @@ Public Class upMethodClass
 		Sql += "IS_DLTFLG = 0 "
 
 		Try
-			Using Conn As New SqlConnection
-				Conn.ConnectionString = (con)
-				Conn.Open()
-				Using transaction As SqlTransaction = Conn.BeginTransaction()
-					Try
-						Using cmd As New SqlCommand(Sql, Conn, transaction)
+			Try
+				Using cmd As New SqlCommand(Sql, common.Conn, common.tra)
 
-							cmd.ExecuteNonQuery()
-							upData = True
-							transaction.Commit()
-						End Using
-					Catch ex As Exception
-						transaction.Rollback()
-						Console.WriteLine(ex.Message)
-					End Try
+					cmd.ExecuteNonQuery()
+					upData = True
+					common.tra.Commit()
 				End Using
-			End Using
+			Catch ex As Exception
+				common.tra.Rollback()
+				Console.WriteLine(ex.Message)
+			End Try
 		Catch ex As Exception
+			common.tra.Rollback()
 			Console.WriteLine(ex.Message)
 			upData = False
 		End Try
+
 
 	End Function
 
@@ -83,6 +84,25 @@ Public Class upMethodClass
 		data.Columns.Add("IS_DLTFLG")
 
 		customerDataAddColums = data
+
+	End Function
+
+
+
+	'取得データが画面表示データと一致するか確認する。
+	Function checkCusData(beforeData As DataTable, afterData As DataTable) As Integer
+
+		For i = 0 To afterData.Columns.Count - 1
+
+			If beforeData.Rows(0)(i).ToString <> afterData.Rows(0)(i).ToString Then
+
+				checkCusData = 1
+				Return checkCusData
+
+			End If
+		Next
+
+		checkCusData = 0
 
 	End Function
 

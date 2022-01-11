@@ -23,8 +23,6 @@
 
     '顧客情報更新メソッドクラスの呼び出し
     Dim upMethod As New upMethodClass
-    '顧客情報更新変換データクラスの呼び出し
-    Dim upCus As New upCusInfo
 
     'メソッドの戻り値代入変数
     Dim no As Integer = 0
@@ -34,6 +32,10 @@
     Dim catchData As Integer = 0
     '画面記述項目を入れるDataTable変数
     Dim screenData As New DataTable
+    '画面表示時のデータを保管するテーブル
+    Shared firstViewData As New DataTable
+
+    Dim con As String = commonMethod.dataSorce
 
     'ページが表示された時に起こる処理
     Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
@@ -41,7 +43,7 @@
         'ポストバックしてない場合初期化
         If Not Page.IsPostBack Then
             '性別に値を代入。
-            commonItem.sexItemBrankInsert(ddl_Sex)
+            commonItem.sexItemInsert(ddl_Sex)
             'エラーメッセージを表示しない状態に変更。
             lbl_ErrorMsg.Visible = False
 
@@ -60,6 +62,7 @@
                 commonMethod.getCusData = commonMethod.customerDataAddColums(commonMethod.getCusData)
                 '会員情報のデータ取得
                 no = commonMethod.GetData(commonMethod.getCusData, selectView.viewCusID)
+                firstViewData = commonMethod.getCusData
 
                 If no = 2 Then
                     'SQLエラーのため、SQLエラーメッセージを表示する。
@@ -77,28 +80,8 @@
                 Return
             End Try
 
-            '取得された性別のデータを文字にする。
-            viewCus.viewCusSex = commonMethod.sexWordChange(commonMethod.getCusData.Rows(0)("SEX"))
-
-
-            '取得された項目のデータ表示
-            txt_ID.Text = commonMethod.getCusData.Rows(0)("CUST_ID").ToString
-            txt_LastName.Text = commonMethod.getCusData.Rows(0)("PERSON_LASTNAME").ToString
-            txt_Name.Text = commonMethod.getCusData.Rows(0)("PERSON_NAME").ToString
-            txt_KanaLastName.Text = commonMethod.getCusData.Rows(0)("PERSON_KANA_LASTNAME").ToString
-            txt_KanaName.Text = commonMethod.getCusData.Rows(0)("PERSON_KANA_NAME").ToString
-            txt_BirthYear.Text = commonMethod.getCusData.Rows(0)("BIRTH_YEAR").ToString
-            txt_BirthMonth.Text = commonMethod.getCusData.Rows(0)("BIRTH_MONTH").ToString
-            txt_BirthDay.Text = commonMethod.getCusData.Rows(0)("BIRTH_DAY").ToString
-            txt_PostalCode.Text = commonMethod.getCusData.Rows(0)("POSTAL_CODE").ToString
-            txt_AddressCity.Text = commonMethod.getCusData.Rows(0)("ADDRESS_CITY").ToString
-            txt_AdressStreet.Text = commonMethod.getCusData.Rows(0)("ADDRESS_STREET").ToString
-            txt_AdressBuilding.Text = commonMethod.getCusData.Rows(0)("ADDRESS_BUILDING").ToString
-
-            catchData = commonMethod.getCusData.Rows(0)("SEX")
-            ddl_Sex.SelectedValue = catchData - 1
-            catchData = commonMethod.getCusData.Rows(0)("ADDRESS_PREFECTURES")
-            ddl_Prefecture.SelectedValue = catchData
+            '取得データの表示
+            dataView(commonMethod.getCusData)
 
             'パスワード変更チェックボックスのチェックを外す。
             chkBox_Pass.Checked = False
@@ -123,7 +106,6 @@
     '画面の項目を初期化する。
     Sub Clear()
 
-        txt_ID.Text = ""
         txt_Pass.Text = ""
         txt_PassCheck.Text = ""
         txt_LastName.Text = ""
@@ -163,20 +145,63 @@
         data.Rows(0)("ADDRESS_STREET") = txt_AdressStreet.Text
         data.Rows(0)("ADDRESS_BUILDING") = txt_AdressBuilding.Text
         data.Rows(0)("UPDATE_PERSON") = txt_ID.Text
-        'data.Rows(0)("UPDATE_DAY") = $"{Date.Now.Year}{Date.Now.Month}{Date.Now.Day}"
         data.Rows(0)("UPDATE_DAY") = $"{Format(Date.Now, "yyyyMMdd")}"
         data.Rows(0)("IS_DLTFLG") = 0
+
+    End Sub
+
+
+    '画面にデータを出力する。
+    Sub dataView(data As DataTable)
+
+        '取得された性別のデータを文字にする。
+        viewCus.viewCusSex = commonMethod.sexWordChange(data.Rows(0)("SEX"))
+
+
+        '取得された項目のデータ表示
+        txt_ID.Text = data.Rows(0)("CUST_ID").ToString
+        txt_LastName.Text = data.Rows(0)("PERSON_LASTNAME").ToString
+        txt_Name.Text = data.Rows(0)("PERSON_NAME").ToString
+        txt_KanaLastName.Text = data.Rows(0)("PERSON_KANA_LASTNAME").ToString
+        txt_KanaName.Text = data.Rows(0)("PERSON_KANA_NAME").ToString
+        txt_BirthYear.Text = data.Rows(0)("BIRTH_YEAR").ToString
+        txt_BirthMonth.Text = data.Rows(0)("BIRTH_MONTH").ToString
+        txt_BirthDay.Text = data.Rows(0)("BIRTH_DAY").ToString
+        txt_PostalCode.Text = data.Rows(0)("POSTAL_CODE").ToString
+        txt_AddressCity.Text = data.Rows(0)("ADDRESS_CITY").ToString
+        txt_AdressStreet.Text = data.Rows(0)("ADDRESS_STREET").ToString
+        txt_AdressBuilding.Text = data.Rows(0)("ADDRESS_BUILDING").ToString
+
+        catchData = data.Rows(0)("SEX")
+        ddl_Sex.SelectedValue = catchData - 1
+        catchData = data.Rows(0)("ADDRESS_PREFECTURES")
+        ddl_Prefecture.SelectedValue = catchData
+
 
     End Sub
 
     Protected Sub btn_Add_Click(sender As Object, e As EventArgs) Handles btn_Add.Click
 
         Try
+            commonMethod.Conn.ConnectionString = (con)
+            commonMethod.Conn.Open()
+            commonMethod.cmd = commonMethod.Conn.CreateCommand()
+            commonMethod.tra = commonMethod.Conn.BeginTransaction(IsolationLevel.ReadCommitted)
+            commonMethod.cmd.Transaction = commonMethod.tra
 
-            '悲観ロックの実行
-            'commonMethod.GetRockData(commonMethod.getCusData, txt_ID.Text)
 
+            '取得データを保持するDataTableの作成。
+            upMethod.getCusAfterData = commonMethod.customerOnlyDataAddColums(upMethod.getCusAfterData)
+            '悲観ロックの実行、データの取得
+            commonMethod.GetRockData(commonMethod, upMethod.getCusAfterData, txt_ID.Text)
 
+            '取得データと画面表示時のデータが一致しているか確認。
+            If 0 < upMethod.checkCusData(firstViewData, upMethod.getCusAfterData) Then
+                'Pass不一致エラーのため、エラーメッセージを表示する。
+                dataView(upMethod.getCusAfterData)
+                errorNO = number.no8
+                Throw New Exception
+            End If
 
 
 #Region "必須項目の記述確認"
@@ -270,10 +295,10 @@
             '画面記述を保持するDataTableの作成。
             screenData = commonMethod.customerOnlyDataAddColums(screenData)
             '画面記述をDataTableに代入。
-            dataInsert(screenData, upCus)
+            dataInsert(screenData, up)
 
             '会員情報のデータ登録
-            no = upMethod.upData(screenData)
+            no = upMethod.upData(commonMethod, screenData)
 
             If no = 2 Then
                 'SQLエラーのため、SQLエラーメッセージを表示する。
@@ -293,7 +318,13 @@
                 Return
             End If
 
+        Finally
+            commonMethod.cmd.Dispose()
+            commonMethod.Conn.Close()
+            commonMethod.Conn.Dispose()
+
         End Try
+
 
         '画面項目を初期化する。
         Clear()
